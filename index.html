@@ -1026,14 +1026,15 @@
 
             </div>
 
-              <notification-indicator data-channel="eyJjIjoibm90aWZpY2F0aW9uLWNoYW5nZWQ6MjA4OTk4MjM4IiwidCI6MTc2NDM0OTkxM30=--1d8f4e9411891d46415c27cafdaa4950249496fd582363818abab0477ecbc4e2" data-indicator-mode="none" data-tooltip-global="You have unread notifications" data-tooltip-unavailable="Notifications are unavailable at the moment." data-tooltip-none="You have no unread notifications" data-header-redesign-enabled="true" data-fetch-indicator-src="/notifications/indicator" data-fetch-indicator-enabled="true" data-view-component="true" class="js-socket-channel">
-    <a id="AppHeader-notifications-button" href="/notifications" aria-labelledby="notification-indicator-tooltip" data-hotkey="g n" data-target="notification-indicator.link" data-analytics-event="{&quot;category&quot;:&quot;Global navigation&quot;,&quot;action&quot;:&quot;NOTIFICATIONS_HEADER&quot;,&quot;label&quot;:null}" data-view-component="true" class="Button Button--iconOnly Button--secondary Button--medium AppHeader-button color-fg-muted">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-inbox Button-visual">
-    <path d="M2.8 2.06A1.75 1.75 0 0 1 4.41 1h7.18c.7 0 1.333.417 1.61 1.06l2.74 6.395c.04.093.06.194.06.295v4.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25v-4.5c0-.101.02-.202.06-.295Zm1.61.44a.25.25 0 0 0-.23.152L1.887 8H4.75a.75.75 0 0 1 .6.3L6.625 10h2.75l1.275-1.7a.75.75 0 0 1 .6-.3h2.863L11.82 2.652a.25.25 0 0 0-.23-.152Zm10.09 7h-2.875l-1.275 1.7a.75.75 0 0 1-.6.3h-3.5a.75.75 0 0 1-.6-.3L4.375 9.5H1.5v3.75c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25Z"></path>
-</svg>
-</a>
-
-    <tool-tip id="notification-indicator-tooltip" data-target="notification-indicator.tooltip" for="AppHeader-notifications-button" popover="manual" data-direction="s" data-type="label" data-view-component="true" class="sr-only position-absolute">Notifications</tool-tip>
-</notification-indicator>
+              <div class="AppHeader-button-wrapper" style="margin-right: 8px;">
+    <button id="AppHeader-upload-button" type="button" onclick="toggleModal(true)" class="Button Button--iconOnly Button--secondary Button--medium AppHeader-button color-fg-muted">  
+        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-upload Button-visual">
+            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"></path>
+            <path d="M11.78 4.78a.75.75 0 0 1-1.06 0L8.75 2.81v7.44a.75.75 0 0 1-1.5 0V2.81L5.28 4.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"></path>
+        </svg>
+    </button>
+    <tool-tip for="AppHeader-upload-button" popover="manual" data-direction="s" data-type="label" data-view-component="true" class="sr-only position-absolute">Subir archivo</tool-tip>
+</div>
 
             <div class="AppHeader-user">
               <deferred-side-panel data-url="/_side-panels/user?repository_id=1049611859">
@@ -2901,6 +2902,147 @@ HAVING COUNT(DISTINCT DATE_FORMAT(p.fechaRealizacion, '%Y-%m')) &gt;= 3;"><pre><
     </div>
     <div id="js-global-screen-reader-notice" class="sr-only mt-n1" aria-live="polite" aria-atomic="true" ></div>
     <div id="js-global-screen-reader-notice-assertive" class="sr-only mt-n1" aria-live="assertive" aria-atomic="true"></div>
+  <style>
+    /* Estilos para el Modal Oscuro estilo GitHub */
+    .custom-modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(2px);
+    }
+
+    .custom-modal-box {
+        background-color: #0d1117; /* Fondo oscuro GitHub */
+        border: 1px solid #30363d; /* Borde gris oscuro */
+        border-radius: 6px;
+        width: 450px;
+        padding: 0;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        color: #c9d1d9; /* Texto claro */
+    }
+
+    .custom-modal-header {
+        background-color: #161b22;
+        padding: 16px;
+        border-bottom: 1px solid #30363d;
+        border-radius: 6px 6px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .custom-modal-header h3 { margin: 0; font-size: 14px; font-weight: 600; }
+    
+    .custom-close-btn { background: none; border: none; color: #8b949e; cursor: pointer; font-size: 16px; }
+    .custom-close-btn:hover { color: #58a6ff; }
+
+    .custom-modal-body { padding: 20px; }
+
+    .gh-input {
+        width: 100%;
+        background-color: #0d1117;
+        border: 1px solid #30363d;
+        color: #c9d1d9;
+        padding: 5px 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 20px;
+        box-sizing: border-box;
+    }
+    .gh-input:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
+
+    .gh-label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+
+    .gh-btn-primary {
+        background-color: #238636;
+        color: white;
+        border: 1px solid rgba(240,246,252,0.1);
+        border-radius: 6px;
+        padding: 5px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+    }
+    .gh-btn-primary:hover { background-color: #2ea043; }
+</style>
+
+<div id="uploadModal" class="custom-modal-overlay">
+    <div class="custom-modal-box">
+        <div class="custom-modal-header">
+            <h3>Subir archivo</h3>
+            <button class="custom-close-btn" onclick="toggleModal(false)">✕</button>
+        </div>
+        <div class="custom-modal-body">
+            <label class="gh-label">Archivo</label>
+            <input type="file" id="fileInput" class="gh-input" style="padding-left: 0;">
+            
+            <label class="gh-label">Descripción</label>
+            <input type="text" id="descInput" class="gh-input" placeholder="Descripción del commit o archivo...">
+            
+            <button class="gh-btn-primary" onclick="handleMagicUpload()">Confirmar subida</button>
+            <p id="uploadStatus" style="font-size: 12px; color: #8b949e; margin-top: 10px;"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleModal(show) {
+        document.getElementById('uploadModal').style.display = show ? 'flex' : 'none';
+    }
+
+    // Lógica mágica
+    function handleMagicUpload() {
+        const fileInput = document.getElementById('fileInput');
+        const descInput = document.getElementById('descInput').value;
+        const status = document.getElementById('uploadStatus');
+
+        if (fileInput.files.length === 0) {
+            alert("Por favor selecciona un archivo.");
+            return;
+        }
+
+        status.textContent = "Procesando subida...";
+        status.style.color = "#e3b341"; // Amarillo GitHub
+
+        setTimeout(() => {
+            // Lógica de descarga simulada
+            let content = "Contenido por defecto.";
+            let filename = "resultado.txt";
+
+            if (descInput.toLowerCase().includes("secreto")) {
+                content = "ESTE ES EL CONTENIDO SECRETO DESCARGADO.";
+                filename = "top_secret_data.txt";
+            } else {
+                content = "Archivo procesado: " + fileInput.files[0].name;
+            }
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            status.textContent = "¡Completado! Descarga iniciada.";
+            status.style.color = "#238636"; // Verde GitHub
+            
+            setTimeout(() => { toggleModal(false); status.textContent = ""; }, 1500);
+        }, 1000);
+    }
+</script>
   </body>
 </html>
 
