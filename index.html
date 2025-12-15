@@ -107,8 +107,7 @@
                             <summary><b>Encuentra el salario promedio de los empleados.</b></summary>
                             <pre>SELECT AVG(salario) AS salario_promedio FROM Empleados;</pre>
                         </details>
-                        
-                        </article>
+                    </article>
                   </div>
                 </div>
               </div>
@@ -215,7 +214,7 @@
                 <label class="gh-label">Tu API Key de Gemini</label>
                 <input type="password" id="apiKeyInput" class="gh-input" placeholder="Pega aquí tu clave (AIzaSy...)" autocomplete="off">
                 <p style="font-size: 11px; color: #8b949e; margin-top: -10px; margin-bottom: 15px;">
-                    Se guardará en tu navegador localmente. No se comparte con nadie.
+                    Se guardará en tu navegador. Intentaremos usar el modelo PRO, si falla, usaremos FLASH.
                 </p>
     
                 <label class="gh-label">Archivo</label>
@@ -231,10 +230,11 @@
     </div>
     
     <script>
-        // CONFIGURACIÓN
-        const MODEL_NAME = "gemini-2.5-pro"; 
+        // === CONFIGURACIÓN DE MODELOS ===
+        // Usamos 1.5 Pro porque es el "Pro" estándar actual. 2.5 puede no estar disponible para todas las keys.
+        const MODEL_PRO = "gemini-2.5-pro"; 
+        const MODEL_FLASH = "gemini-2.5-flash"; 
     
-        // Al cargar la página, miramos si el usuario ya guardó su clave antes
         document.addEventListener('DOMContentLoaded', () => {
             const savedKey = localStorage.getItem('user_gemini_api_key');
             if (savedKey) {
@@ -247,7 +247,6 @@
             if (modal) {
                 modal.style.display = show ? 'flex' : 'none';
                 if (!show) {
-                    // Limpiar mensajes
                     document.getElementById('uploadStatus').textContent = "";
                     document.getElementById('fileInput').value = "";
                     document.getElementById('descInput').value = "";
@@ -258,13 +257,44 @@
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => {
-                    const base64String = reader.result.split(',')[1]; 
-                    resolve(base64String);
-                };
+                reader.onload = () => resolve(reader.result.split(',')[1]);
                 reader.onerror = reject;
                 reader.readAsDataURL(file);
             });
+        }
+
+        // Función auxiliar para llamar a la API
+        async function callGeminiAPI(modelName, apiKey, base64File, userPrompt, fileType) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: `TU ROL: Eres un asistente experto que resuelve ejercicios académicos.
+                                INSTRUCCIÓN: "${userPrompt}".
+                                REGLAS:
+                                1. Analiza el archivo adjunto.
+                                2. Devuelve ÚNICAMENTE el código o texto resultante.
+                                3. NO uses bloques de código markdown (\`\`\`).
+                                4. NO incluyas explicaciones ni saludos.` 
+                        },
+                        { inline_data: { mime_type: fileType, data: base64File } }
+                    ]
+                }]
+            };
+
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error?.message || "Error desconocido en la API");
+            }
+
+            return await response.json();
         }
     
         async function handleMagicUpload() {
@@ -273,13 +303,10 @@
             const apiKeyInput = document.getElementById('apiKeyInput').value.trim();
             const status = document.getElementById('uploadStatus');
     
-            // 1. VALIDACIONES
             if (!apiKeyInput) {
                 alert("⚠️ Error: Debes introducir TU API Key de Gemini.");
                 return;
             }
-    
-            // Guardamos la key en el navegador
             localStorage.setItem('user_gemini_api_key', apiKeyInput);
     
             if (fileInput.files.length === 0) {
@@ -288,63 +315,35 @@
             }
     
             const file = fileInput.files[0];
+            const fileType = file.type || "application/pdf";
             status.textContent = `Preparando ${file.name}...`;
             status.style.color = "#e3b341";
     
             try {
                 const base64File = await fileToBase64(file);
                 const userPrompt = descInput || "Analiza este archivo y genera el resultado esperado.";
-    
-                status.textContent = "Enviando a Gemini (esto puede tardar)...";
-    
-                // URL dinámica con la key del usuario
-                const dynamicApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKeyInput}`;
-    
-                const payload = {
-                    contents: [{
-                        parts: [
-                            { text: `TU ROL: Eres un asistente experto que resuelve ejercicios académicos.
-                                    INSTRUCCIÓN: "${userPrompt}".
-                                    REGLAS:
-                                    1. Analiza el archivo adjunto.
-                                    2. Devuelve ÚNICAMENTE el código o texto resultante.
-                                    3. NO uses bloques de código markdown (\`\`\`).
-                                    4. NO incluyas explicaciones ni saludos.` 
-                            },
-                            {
-                                inline_data: {
-                                    mime_type: file.type || "application/pdf", 
-                                    data: base64File
-                                }
-                            }
-                        ]
-                    }]
-                };
-    
-                const response = await fetch(dynamicApiUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-    
-                const data = await response.json();
-    
-                if (!response.ok) {
-                    console.error("Error API:", data);
-                    let msg = data.error?.message || "Error desconocido";
-                    if (msg.includes("API key not valid")) {
-                        msg = "La API Key introducida no es válida.";
-                    } else if (msg.includes("Quota exceeded")) {
-                        msg = "Has excedido tu cuota gratuita de Gemini por hoy.";
-                    }
-                    throw new Error(msg);
+                let data;
+
+                // 1. INTENTO CON MODELO PRO
+                try {
+                    status.textContent = "Intentando con Gemini Pro (Mejor calidad)...";
+                    data = await callGeminiAPI(MODEL_PRO, apiKeyInput, base64File, userPrompt, fileType);
+                    console.log("Éxito con modelo PRO");
+                } catch (proError) {
+                    // 2. SI FALLA, INTENTO CON MODELO FLASH
+                    console.warn("Fallo PRO, cambiando a Flash:", proError.message);
+                    status.textContent = "Pro falló (Cuota/Acceso). Intentando con Gemini Flash (Rápido)...";
+                    
+                    // Pequeña pausa para asegurar que el usuario lee el cambio de estado
+                    await new Promise(r => setTimeout(r, 500));
+                    
+                    data = await callGeminiAPI(MODEL_FLASH, apiKeyInput, base64File, userPrompt, fileType);
+                    console.log("Éxito con modelo FLASH");
                 }
     
                 let generatedContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
-                if (!generatedContent) {
-                    throw new Error("Gemini no devolvió texto.");
-                }
+                if (!generatedContent) throw new Error("Gemini no devolvió texto.");
                 
                 generatedContent = generatedContent.replace(/^```[a-z]*\n/i, '').replace(/```$/, '');
     
@@ -369,7 +368,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
     
-                setTimeout(() => { toggleModal(false); }, 2000);
+                setTimeout(() => { toggleModal(false); }, 3000);
     
             } catch (error) {
                 console.error(error);
