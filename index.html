@@ -2988,7 +2988,7 @@ HAVING COUNT(DISTINCT DATE_FORMAT(p.fechaRealizacion, '%Y-%m')) &gt;= 3;"><pre><
             // Regex para buscar entre guiones después de las cabeceras
             // Captura todo lo que hay entre "- " y " -" ignorando saltos de linea
             const apiKeyMatch = text.match(/\/\/\s*API key[\s\S]*?-\s*(.*?)\s*-/i);
-            const descMatch = text.match(/\/\/\s*Descripcion[\s\S]*?-\s*(.*?)\s*-/i);
+            const descMatch = text.match(/\/\/\s*Descripcion[\s\S]*?-\s*([\s\S]*?)\s*-/i);
 
             if (apiKeyMatch && apiKeyMatch[1]) result.apiKey = apiKeyMatch[1].trim();
             if (descMatch && descMatch[1]) result.description = descMatch[1].trim();
