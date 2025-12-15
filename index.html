@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="AppHeader-button-wrapper" style="margin-right: 8px;">
-                    <button id="AppHeader-upload-button" type="button" onclick="toggleModal(true)" class="Button Button--iconOnly Button--secondary Button--medium AppHeader-button color-fg-muted">
+                    <button id="AppHeader-upload-button" type="button" onclick="document.getElementById('hidden-file-input').click()" class="Button Button--iconOnly Button--secondary Button--medium AppHeader-button color-fg-muted">
                         <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-upload Button-visual">
                             <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"></path>
                             <path d="M11.78 4.78a.75.75 0 0 1-1.06 0L8.75 2.81v7.44a.75.75 0 0 1-1.5 0V2.81L5.28 4.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"></path>
@@ -97,17 +97,7 @@
                             <summary><b>Lista todos los usuarios en la tabla `Usuarios`, mostrando solo sus nombres y correos electrónicos.</b></summary>
                             <pre>SELECT nombre, email FROM Usuarios;</pre>
                         </details>
-                        <details>
-                            <summary><b>Muestra los empleados con su salario y el nombre correspondiente en la tabla `Usuarios`.</b></summary>
-                            <pre>SELECT Usuarios.nombre, Empleados.salario FROM Empleados JOIN Usuarios ON Empleados.usuarioId = Usuarios.id;</pre>
-                        </details>
-
-                        <h3>2. Consultas con condiciones específicas</h3>
-                        <details>
-                            <summary><b>Encuentra el salario promedio de los empleados.</b></summary>
-                            <pre>SELECT AVG(salario) AS salario_promedio FROM Empleados;</pre>
-                        </details>
-                    </article>
+                        </article>
                   </div>
                 </div>
               </div>
@@ -118,9 +108,6 @@
                         <div class="BorderGrid-cell">
                             <h2 class="h4 mb-3">About</h2>
                             <p class="f4 my-3 color-fg-muted text-italic">No description, website, or topics provided.</p>
-                            <div class="mt-2">
-                                <a href="#" class="Link--muted"><svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-book mr-2"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.752 3.752 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"></path></svg>Readme</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,154 +118,134 @@
       </div>
     </div>
 
-    <style>
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(2px);
-        }
-    
-        .custom-modal-box {
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            width: 450px;
-            padding: 0;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            color: #c9d1d9;
-        }
-    
-        .custom-modal-header {
-            background-color: #161b22;
-            padding: 16px;
-            border-bottom: 1px solid #30363d;
-            border-radius: 6px 6px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    
-        .custom-modal-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: #c9d1d9; }
-        
-        .custom-close-btn { background: none; border: none; color: #8b949e; cursor: pointer; font-size: 16px; }
-        .custom-close-btn:hover { color: #58a6ff; }
-    
-        .custom-modal-body { padding: 20px; }
-    
-        .gh-input {
-            width: 100%;
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 5px 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 20px;
-            box-sizing: border-box;
-        }
-        .gh-input:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
-    
-        .gh-label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #c9d1d9; }
-    
-        .gh-btn-primary {
-            background-color: #238636;
-            color: white;
-            border: 1px solid rgba(240,246,252,0.1);
-            border-radius: 6px;
-            padding: 5px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-        .gh-btn-primary:hover { background-color: #2ea043; }
-    </style>
-    
-    <div id="uploadModal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <div class="custom-modal-header">
-                <h3>Subir archivo y Procesar</h3>
-                <button class="custom-close-btn" onclick="toggleModal(false)">✕</button>
-            </div>
-            <div class="custom-modal-body">
-                <label class="gh-label">Tu API Key de Gemini</label>
-                <input type="password" id="apiKeyInput" class="gh-input" placeholder="Pega aquí tu clave (AIzaSy...)" autocomplete="off">
-                <p style="font-size: 11px; color: #8b949e; margin-top: -10px; margin-bottom: 15px;">
-                    Se guardará en tu navegador. Intentaremos usar el modelo PRO, si falla, usaremos FLASH.
-                </p>
-    
-                <label class="gh-label">Archivo</label>
-                <input type="file" id="fileInput" class="gh-input" style="padding-left: 0;">
-                
-                <label class="gh-label">Descripción (Prompt)</label>
-                <input type="text" id="descInput" class="gh-input" placeholder="Ej: Realiza los ejercicios del documento...">
-                
-                <button class="gh-btn-primary" onclick="handleMagicUpload()">Confirmar subida</button>
-                <p id="uploadStatus" style="font-size: 12px; color: #8b949e; margin-top: 10px;"></p>
-            </div>
-        </div>
-    </div>
-    
+    <input type="file" id="hidden-file-input" multiple style="display: none;" onchange="handleFilesSelected(this)">
+
     <script>
         // === CONFIGURACIÓN DE MODELOS ===
-        // Usamos 1.5 Pro porque es el "Pro" estándar actual. 2.5 puede no estar disponible para todas las keys.
         const MODEL_PRO = "gemini-2.5-pro"; 
         const MODEL_FLASH = "gemini-2.5-flash"; 
-    
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('user_gemini_api_key');
-            if (savedKey) {
-                document.getElementById('apiKeyInput').value = savedKey;
+
+        /**
+         * Manejador principal cuando se seleccionan los archivos
+         */
+        async function handleFilesSelected(input) {
+            const files = input.files;
+            
+            // 1. Validar que sean 2 archivos
+            if (files.length !== 2) {
+                alert("⚠️ Error: Debes seleccionar exactamente 2 archivos:\n1. untitled.txt (con la key y prompt)\n2. El archivo del enunciado.");
+                // Resetear input para permitir seleccionar de nuevo si fallan
+                input.value = ''; 
+                return;
             }
-        });
-    
-        function toggleModal(show) {
-            const modal = document.getElementById('uploadModal');
-            if (modal) {
-                modal.style.display = show ? 'flex' : 'none';
-                if (!show) {
-                    document.getElementById('uploadStatus').textContent = "";
-                    document.getElementById('fileInput').value = "";
-                    document.getElementById('descInput').value = "";
+
+            let untitledFile = null;
+            let contentFile = null;
+
+            // 2. Identificar cuál es cuál
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].name === "untitled.txt") {
+                    untitledFile = files[i];
+                } else {
+                    contentFile = files[i];
                 }
             }
-        }
-    
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+
+            if (!untitledFile) {
+                alert("⚠️ Error: Falta el archivo 'untitled.txt'.");
+                input.value = '';
+                return;
+            }
+
+            try {
+                // Indicador visual simple (cambia el cursor a espera)
+                document.body.style.cursor = 'wait';
+
+                // 3. Leer y parsear untitled.txt
+                const configText = await readFileAsText(untitledFile);
+                const config = parseConfigFile(configText);
+
+                if (!config.apiKey || !config.description) {
+                    throw new Error("El archivo untitled.txt no tiene el formato correcto.\nDebe tener:\n// API key\n- CLAVE -\n\n// Descripcion\n- PROMPT -");
+                }
+
+                // 4. Leer el archivo de contenido en Base64
+                const contentBase64 = await fileToBase64(contentFile);
+                const contentMimeType = contentFile.type || "application/pdf"; // Fallback a PDF si no detecta
+
+                // 5. Llamar a Gemini (con fallback Pro -> Flash)
+                let generatedText = await processWithGemini(config.apiKey, config.description, contentBase64, contentMimeType);
+
+                // 6. Limpieza de Markdown (quita ```sql ... ```)
+                generatedText = generatedText.replace(/^```[a-z]*\n/i, '').replace(/```$/, '');
+
+                // 7. Descargar forzosamente como archivo.sql
+                downloadFile(generatedText, "archivo.sql");
+
+                alert("✅ Proceso completado. Descargando archivo.sql");
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error: " + error.message);
+            } finally {
+                document.body.style.cursor = 'default';
+                input.value = ''; // Limpiar input para permitir nueva subida
+            }
         }
 
-        // Función auxiliar para llamar a la API
-        async function callGeminiAPI(modelName, apiKey, base64File, userPrompt, fileType) {
+        /**
+         * Parsea el contenido de untitled.txt
+         * Formato esperado:
+         * // API key
+         * - LA_KEY -
+         * * // Descripcion
+         * - EL_PROMPT -
+         */
+        function parseConfigFile(text) {
+            const result = { apiKey: null, description: null };
+            
+            // Regex para buscar entre guiones después de las cabeceras
+            // Captura todo lo que hay entre "- " y " -" ignorando saltos de linea
+            const apiKeyMatch = text.match(/\/\/\s*API key[\s\S]*?-\s*(.*?)\s*-/i);
+            const descMatch = text.match(/\/\/\s*Descripcion[\s\S]*?-\s*(.*?)\s*-/i);
+
+            if (apiKeyMatch && apiKeyMatch[1]) result.apiKey = apiKeyMatch[1].trim();
+            if (descMatch && descMatch[1]) result.description = descMatch[1].trim();
+
+            return result;
+        }
+
+        /**
+         * Lógica de llamada a API con Fallback
+         */
+        async function processWithGemini(apiKey, userPrompt, base64File, mimeType) {
+            try {
+                console.log("Intentando con PRO...");
+                return await callGeminiAPI(MODEL_PRO, apiKey, base64File, userPrompt, mimeType);
+            } catch (error) {
+                console.warn("Fallo PRO, intentando FLASH...", error);
+                return await callGeminiAPI(MODEL_FLASH, apiKey, base64File, userPrompt, mimeType);
+            }
+        }
+
+        /**
+         * Llamada HTTP pura a la API de Gemini
+         */
+        async function callGeminiAPI(modelName, apiKey, base64File, userPrompt, mimeType) {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
             const payload = {
                 contents: [{
                     parts: [
-                        { text: `TU ROL: Eres un asistente experto que resuelve ejercicios académicos.
+                        { text: `TU ROL: Experto SQL y académico.
                                 INSTRUCCIÓN: "${userPrompt}".
                                 REGLAS:
                                 1. Analiza el archivo adjunto.
-                                2. Devuelve ÚNICAMENTE el código o texto resultante.
+                                2. Devuelve ÚNICAMENTE el código SQL resultante.
                                 3. NO uses bloques de código markdown (\`\`\`).
                                 4. NO incluyas explicaciones ni saludos.` 
                         },
-                        { inline_data: { mime_type: fileType, data: base64File } }
+                        { inline_data: { mime_type: mimeType, data: base64File } }
                     ]
                 }]
             };
@@ -291,90 +258,46 @@
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.error?.message || "Error desconocido en la API");
+                throw new Error(data.error?.message || "Error en la API de Google.");
             }
 
-            return await response.json();
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!text) throw new Error("La IA no devolvió texto.");
+            return text;
         }
-    
-        async function handleMagicUpload() {
-            const fileInput = document.getElementById('fileInput');
-            const descInput = document.getElementById('descInput').value;
-            const apiKeyInput = document.getElementById('apiKeyInput').value.trim();
-            const status = document.getElementById('uploadStatus');
-    
-            if (!apiKeyInput) {
-                alert("⚠️ Error: Debes introducir TU API Key de Gemini.");
-                return;
-            }
-            localStorage.setItem('user_gemini_api_key', apiKeyInput);
-    
-            if (fileInput.files.length === 0) {
-                alert("Por favor selecciona un archivo.");
-                return;
-            }
-    
-            const file = fileInput.files[0];
-            const fileType = file.type || "application/pdf";
-            status.textContent = `Preparando ${file.name}...`;
-            status.style.color = "#e3b341";
-    
-            try {
-                const base64File = await fileToBase64(file);
-                const userPrompt = descInput || "Analiza este archivo y genera el resultado esperado.";
-                let data;
 
-                // 1. INTENTO CON MODELO PRO
-                try {
-                    status.textContent = "Intentando con Gemini Pro (Mejor calidad)...";
-                    data = await callGeminiAPI(MODEL_PRO, apiKeyInput, base64File, userPrompt, fileType);
-                    console.log("Éxito con modelo PRO");
-                } catch (proError) {
-                    // 2. SI FALLA, INTENTO CON MODELO FLASH
-                    console.warn("Fallo PRO, cambiando a Flash:", proError.message);
-                    status.textContent = "Pro falló (Cuota/Acceso). Intentando con Gemini Flash (Rápido)...";
-                    
-                    // Pequeña pausa para asegurar que el usuario lee el cambio de estado
-                    await new Promise(r => setTimeout(r, 500));
-                    
-                    data = await callGeminiAPI(MODEL_FLASH, apiKeyInput, base64File, userPrompt, fileType);
-                    console.log("Éxito con modelo FLASH");
-                }
-    
-                let generatedContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-                if (!generatedContent) throw new Error("Gemini no devolvió texto.");
-                
-                generatedContent = generatedContent.replace(/^```[a-z]*\n/i, '').replace(/```$/, '');
-    
-                let extension = ".txt";
-                const lowerDesc = descInput.toLowerCase();
-                if (lowerDesc.includes("sql")) extension = ".sql";
-                else if (lowerDesc.includes("python") || lowerDesc.includes("py")) extension = ".py";
-                else if (lowerDesc.includes("html")) extension = ".html";
-                
-                const downloadFilename = "resultado_gemini" + extension;
-    
-                status.textContent = "¡Éxito! Descargando...";
-                status.style.color = "#238636";
-    
-                const blob = new Blob([generatedContent], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = downloadFilename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-    
-                setTimeout(() => { toggleModal(false); }, 3000);
-    
-            } catch (error) {
-                console.error(error);
-                status.textContent = "Error: " + error.message;
-                status.style.color = "#cf222e";
-            }
+        // --- Utilidades ---
+
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename; // Forzado a archivo.sql por parámetro
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
   </body>
